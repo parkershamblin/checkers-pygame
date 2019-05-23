@@ -16,6 +16,7 @@ This the first programming project I have ever completed entirely on my own and 
 ### How to play 
 Simply download the project and run the "checkers.py" file.
 
-### Things to be added
+### Things to be added/fixed
 - Add GUI to display which player's turn it is
 - Add double jumping
+- Fix normal pieces being allowed to jump over friendly king pieces.

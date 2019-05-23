@@ -121,10 +121,16 @@ def no_chips_between(board, old_x, old_y, new_x, new_y):
 
     board_coords = list(zip(board_x_coords, board_y_coords))
     board_values = [board[y][x] for x, y in board_coords]
-    if all(i == 0 for i in board_values[1:-1]) is True:
-        board[new_y][new_x] = board[old_y][old_x]
-        board[old_y][old_x] = 0
-        return True
+    if len(board_values) > 2:
+        if all(i == 0 for i in board_values[1:-1]) is True:
+            board[new_y][new_x] = board[old_y][old_x]
+            board[old_y][old_x] = 0
+            return True
+    if len(board_values) < 2: # Fixes bug where a king could jump over it's own piece if it was a normal jump
+        if all(i == 0 for i in board_values[1:]) is True:
+            board[new_y][new_x] = board[old_y][old_x]
+            board[old_y][old_x] = 0
+            return True
     else:
         print("You can't jump over several chips at once. Please try another move.")
         return False
