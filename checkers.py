@@ -38,21 +38,12 @@ def place_starting_pieces():
             board[current_row][current_column] = enemy['pawn']
 
 
-def alternate_turns(current_player):
-    if current_player == 1:
-        current_player = 2
-        print("Black's Turn")
-    else:
-        current_player = 1
-        print("Red's Turn")
-
-
 def is_valid_selection(board, current_player, old_x, old_y):
     """Restricts player from slecting posisitions containing no checker pieces or """
     board_selection = board[old_y][old_x]
-    if board_selection == friendly['pawn'] or board_selection == friendly['king']:
+    if board_selection == friendly['pawn'] or friendly['king']:
         return True
-    elif board_selection == enemy['pawn'] or board_selection == enemy['king']:
+    elif board_selection == enemy['pawn'] or enemy['king']:
         print("You've selected an enemy player's piece. Please select your own piece.")
         return False
     else:
@@ -60,10 +51,13 @@ def is_valid_selection(board, current_player, old_x, old_y):
         return False
 
 def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
-    """All logic for normal pieces."""
-    if board[new_y][new_x] != 0:
+    """All logic for pawn pieces."""
+
+    # Prevents moving to a location that already contains a piece.
+    if board[new_y][new_x] != empty:
         print("You cant land on another piece. Please select another location.")
         return False
+
     # Checking for valid moves for Player 1
     if board[old_y][old_x] == 1:
         if (new_y - old_y) == -1 and (new_x - old_x) == 1:
@@ -72,17 +66,18 @@ def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
             return True
         # Checking for valid jump
         elif (new_y - old_y) == -2 and (new_x - old_x) == 2:
-            if board[new_y + 1][new_x - 1] == 2 or 4: # Check if jumped piece contains enemey piece
-                board[new_y + 1][new_x - 1] = 0 # Eliminate jumped enemy piece
+            if board[new_y + 1][new_x - 1] == enemy['pawn'] or enemy['king']:
+                board[new_y + 1][new_x - 1] = empty
                 return True
             else:
                 return False
         elif (new_y - old_y) == -2 and (new_x - old_x) == -2:
-            if board[new_y + 1][new_x + 1] == 2 or 4: # Check if jumped piece contains enemey piece
-                board[new_y + 1][new_x + 1] = 0 # Eliminate jumped enemy piece
+            if board[new_y + 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                board[new_y + 1][new_x + 1] = empty
                 return True
             else:
                 return False
+                
     # Checking for valid moves for Player 2
     elif board[old_y][old_x] == 2:
         if (new_y - old_y) == 1 and (new_x - old_x) == 1:
@@ -91,14 +86,14 @@ def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
             return True
         # Checking for valid jumps for Player 2
         elif (new_y - old_y) == 2 and (new_x - old_x) == 2:
-            if board[new_y - 1][new_x - 1] == 1 or 3: # Check if jumped piece contains enemey piece
-                board[new_y - 1][new_x - 1] = 0 # Eliminate jumped enemy piece
+            if board[new_y - 1][new_x - 1] == enemy['pawn'] or enemy['king']:
+                board[new_y - 1][new_x - 1] = empty
                 return True
             else:
                 return False
         elif (new_y - old_y) == 2 and (new_x - old_x) == -2:
-            if board[new_y - 1][new_x + 1] == 1 or 3: # Check if jumped piece contains enemey piece
-                board[new_y - 1][new_x + 1] = 0 # Eliminate jumped enemy piece
+            if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                board[new_y - 1][new_x + 1] = empty
                 return True
             else:
                 return False
@@ -126,26 +121,31 @@ def no_chips_between(board, old_x, old_y, new_x, new_y):
     board_coords = list(zip(board_x_coords, board_y_coords))
     board_values = [board[y][x] for x, y in board_coords]
     if len(board_values) > 2:
-        if all(i == 0 for i in board_values[1:-1]) is True:
+        if all(i == empty for i in board_values[1:-1]) is True:
             board[new_y][new_x] = board[old_y][old_x]
-            board[old_y][old_x] = 0
+            board[old_y][old_x] = empty
             return True
+            
     # Allows king players to jump next to enemy pieces right next to them
     if len(board_values) == 2:
         if all(i == enemy['pawn'] for i in board_values[1:]) is True:
             board[new_y][new_x] = board[old_y][old_x]
-            board[old_y][old_x] = 0
+            board[old_y][old_x] = empty
             return True
         elif all(i == enemy['king'] for i in board_values[1:]) is True:
             board[new_y][new_x] = board[old_y][old_x]
-            board[old_y][old_x] = 0
+            board[old_y][old_x] = empty
+            return True
+        elif all(i == empty for i in board_values[1:]) is True:
+            board[new_y][new_x] = board[old_y][old_x]
+            board[old_y][old_x] = empty
             return True
 
-    # Allows king players to move one spot over.
+    # Allows king players to move one spot over (like a pawn would move)
     elif len(board_values) == 1:
-        if all(i == 0 for i in board_values[:]) is True:
+        if all(i == empty for i in board_values[1:]) is True:
             board[new_y][new_x] = board[old_y][old_x]
-            board[old_y][old_x] = 0
+            board[old_y][old_x] = empty
             return True
     else:
         print("You can't jump over several chips at once. Please try another move.")
@@ -162,12 +162,10 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
     if new_y == old_y:
         print("Even as a king you cannot move horizontally in this diagonal world.")
         return False
-
     # Prevent horizontal moves
     if new_x == old_x:
         print("Even as a king you cannot move vertically in this diagonal world.")
         return False
-
     # Prevent moves that do not have a slope of 1
     if new_x > old_x and new_y > old_y:
         if (new_x - old_x) != (new_y - old_y):
@@ -183,38 +181,10 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
             return False
 
 
-    # Allow player to move when there are no pieces in between their old position and new position.
-    # It exactly the same the is_chips_between function however for the if all statement at the bottom
-    # the board_values index extends all the way to new position instead of the -1nth index poistion.
-    board_y_coords = []
-    board_x_coords = []
-    if old_y < new_y:
-        for row in range(old_y, new_y):
-            board_y_coords.append(row)
-    if old_y > new_y:
-        for row in range(old_y, new_y, -1):
-            board_y_coords.append(row)
-    if old_x < new_x:
-        for column in range(old_x, new_x):
-            board_x_coords.append(column)
-    if old_x > new_x:
-        for column in range(old_x, new_x, -1):
-            board_x_coords.append(column)
-
-    board_coords = list(zip(board_x_coords, board_y_coords))
-    board_values = [board[y][x] for x, y in board_coords]
-    if all(i == 0 for i in board_values[1:]) is True:
-        board[new_y][new_x] = board[old_y][old_x]
-        board[old_y][old_x] = 0
-        return True
-
-
     # King Jump Logic
     if board[old_y][old_x] == friendly['king']:
-
-        # North East Jump 
-        try:
-            if board[new_y + 1][new_x - 1] == enemy['pawn'] or [new_y + 1][new_x - 1] == enemy['king']:
+        try: # North East Jump
+            if board[new_y + 1][new_x - 1] == enemy['pawn'] or enemy['king']:
                 if old_x < new_x and old_y > new_y:
                     if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                         board[new_y][new_x] = friendly['king']
@@ -223,10 +193,8 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
                         return True
         except IndexError:
             pass
-
-        # North West Jump 
-        try:
-            if board[new_y + 1][new_x + 1] == enemy['pawn'] or board[new_y + 1][new_x + 1] == enemy['king']:
+        try: # North West Jump 
+            if board[new_y + 1][new_x + 1] == enemy['pawn'] or enemy['king']:
                 if old_x > new_x and old_y > new_y:
                     if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                         board[new_y][new_x] = friendly['king']
@@ -235,9 +203,8 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
                         return True
         except IndexError:
             pass
-        # South East Jump 
-        try:
-            if board[new_y - 1][new_x - 1] == enemy['pawn'] or board[new_y - 1][new_x - 1] == enemy['king']:
+        try: # South East Jump
+            if board[new_y - 1][new_x - 1] == enemy['pawn'] or enemy['king']:
                 if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                     if old_x < new_x and old_y < new_y:
                         board[new_y][new_x] = friendly['king']
@@ -246,9 +213,8 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
                         return True
         except IndexError:
             pass
-        # South West Jump 
-        try:
-            if board[new_y - 1][new_x + 1] == enemy['pawn'] or board[new_y - 1][new_x + 1] == enemy['pawn']:
+        try: # South West Jump
+            if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['pawn']:
                 if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                     if old_x > new_x and old_y < new_y:
                         board[new_y][new_x] = friendly['king']
@@ -259,21 +225,14 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
             pass
 
 
-def check_for_win(board):
-    remaining_red_pieces = []
+def check_for_win(current_player, board):
+    remaining_enemy_pieces = []
     for row in board:
-        remaining_red_pieces.append(row.count(1))
-        remaining_red_pieces.append(row.count(3))
-    if sum(remaining_red_pieces) == 0:
-        print("Black has won!")
-        return True
-        
-    remaining_black_pieces = []
-    for row in board:
-        remaining_black_pieces.append(row.count(2))
-        remaining_black_pieces.append(row.count(4))
-    if sum(remaining_black_pieces) == 0:
-        print("Red has won!")
+        remaining_enemy_pieces.append(row.count(enemy['pawn']))
+        remaining_enemy_pieces.append(row.count(enemy['king']))
+    print(sum(remaining_enemy_pieces))
+    if sum(remaining_enemy_pieces) == 0:
+        print(f"Player {current_player} has won!")
         return True
 
 # Initalize vairables
@@ -290,9 +249,6 @@ screen = pygame.display.set_mode(window_size)
 
 # Set title of screen
 pygame.display.set_caption("Checkers")
-
-# Loop until the user clicks the close button.
-done = False
 
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
@@ -323,14 +279,14 @@ current_player = 1
 print("Red's Turn") # Printing at start of the game before main loop
 
 # Main active game loop
-while not done:
+while not game_over:
     for event in pygame.event.get():  # User did something
         mouse_pos = pygame.mouse.get_pos()
         mouse_matrix_pos = ((mouse_pos[0] // width), (mouse_pos[1] // height)) # Matrix Cordinates of Mouse posisiton
         # print(mouse_matrix_pos)
         
         if event.type == pygame.QUIT:  # If user clicked close
-            done = True  # Flag that we are done so we exit this loop
+            game_over = True  # Flag that the user has quit so we exit this loop
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             current_pos = pygame.mouse.get_pos()
@@ -347,7 +303,7 @@ while not done:
             while True:
                 event = pygame.event.wait()
                 if event.type == pygame.QUIT:
-                    done = True
+                    game_over = True
                 elif event.type == pygame.MOUSEBUTTONUP:
                     new_pos = pygame.mouse.get_pos()
                     # Translating mouse x, y screen coordinates to matrix coordinates
@@ -359,26 +315,34 @@ while not done:
                         if is_valid_move(current_player, board, old_x, old_y, new_x, new_y) is True:
                             board[new_y][new_x] = friendly['pawn']
                             board[old_y][old_x] = empty
+                            if check_for_win(current_player, board) is True:
+                                game_over = True
+
                             # Swap sides
                             if current_player == 1:
                                 current_player = 2
+                                print("Black's Turn")
                             else:
                                 current_player = 1
+                                print("Red's Turn")
 
                             friendly, enemy = enemy, friendly
 
                     if board[old_y][old_x] == (friendly['king']):
                         if is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y) is True:
+                            if check_for_win(current_player, board) is True:
+                                game_over = True
+
                             # Swap sides
                             if current_player == 1:
                                 current_player = 2
+                                print("Black's Turn")
                             else:
                                 current_player = 1
+                                print("Red's Turn")
 
                             friendly, enemy = enemy, friendly
 
-                    if check_for_win(board) is True:
-                        done = True
 
                     # Turn player into king if they make it to the opposite side of the board
                     for row in range(8):
