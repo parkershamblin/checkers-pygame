@@ -6,16 +6,14 @@ empty = 0
 friendly = {'pawn': 1, 'king': 3}
 enemy = {'pawn': 2, 'king': 4}
 
+# Initalize board size
+rows = 8
+columns = 8
 
-# Create matrix with all vectors containing elements set to zero.
+
+# Create board 
 def create_board():
-    board = []
-    for row in range(8):
-        row = []
-        board.append(row)
-        for column in range(8):
-            column = empty
-            row.append(column)
+    board = [[empty for column in range(columns)] for row in range(rows)]
     return board
 
 
@@ -225,6 +223,59 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
             pass
 
 
+def check_if_double_jump_possible(board, new_x, new_y):
+    # Checking for valid jump for pawns
+    if current_player == 1:
+        try:
+            # North East
+            if board[new_y - 2][new_x + 2] == empty:
+                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                    return True
+            # North West
+            elif board[new_y - 2][new_x - 2] == empty:
+                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                    return True
+        except IndexError:
+            pass
+    if current_player == 2:
+        try:
+            # North East
+            if board[new_y + 2][new_x + 2] == empty:
+                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                    return True
+            # North West
+            elif board[new_y + 2][new_x - 2] == empty:
+                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                    return True
+        except IndexError:
+            pass
+    # Checking for king double jump possibility
+    if board[new_y][new_x] == friendly['king']:
+        try:
+            for i in range(8):
+                # North East
+                if board[new_y - i][new_x + i] == enemy['pawn'] or enemy['king']:
+                    if board[new_y - (i+1)][new_x + (i+1)] == empty:
+                        return True
+                # North West
+                elif board[new_y - i][new_x - i] == enemy['pawn'] or enemy['king']:
+                    if board[new_y - (i+1)][new_x - (i+1)] == empty:
+                        return True
+                # South East
+                elif board[new_y + i][new_x + i] == enemy['pawn'] or enemy['king']:
+                    if board[new_y + (i+1)][new_x + (i+1)] == empty:
+                        return True
+                # South West
+                elif board[new_y + i][new_x - i] == enemy['pawn'] or enemy['king']:
+                    if board[new_y + (i+1)][new_x - (i+1)] == empty:
+                        return True
+        except IndexError:
+            pass
+    else:
+        return False
+
+
+
 def check_for_win(current_player, board):
     remaining_enemy_pieces = []
     for row in board:
@@ -288,12 +339,18 @@ while not game_over:
         if event.type == pygame.QUIT:  # If user clicked close
             game_over = True  # Flag that the user has quit so we exit this loop
 
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
             current_pos = pygame.mouse.get_pos()
             # Translating mouse x, y screen coordinates to matrix coordinates
             old_x = (current_pos[0] // width)
             old_y = (current_pos[1] // height)
             # print(f"Old coordinates: [{old_x}, {old_y}]")
+
+            # I didn't know about classes at all when I first started working on this project so
+            # I've taken an easy but pretty sloppy approach to decided if a jump has occured
+            # or not.
+            previous_piece_total = sum([sum(row) for row in board])
 
             if is_valid_selection(board, current_player, old_x, old_y) == True:
                 pass # Do nothing if player has made a valid selection
@@ -315,33 +372,71 @@ while not game_over:
                         if is_valid_move(current_player, board, old_x, old_y, new_x, new_y) is True:
                             board[new_y][new_x] = friendly['pawn']
                             board[old_y][old_x] = empty
+
                             if check_for_win(current_player, board) is True:
                                 game_over = True
 
-                            # Swap sides
-                            if current_player == 1:
-                                current_player = 2
-                                print("Black's Turn")
-                            else:
-                                current_player = 1
-                                print("Red's Turn")
+                            # If the total amount of chips has changed and a double
+                            # jump opportunity is available do not switch sides.
+                            current_piece_total = sum([sum(row) for row in board])
 
-                            friendly, enemy = enemy, friendly
+                            if previous_piece_total > current_piece_total:
+                                if check_if_double_jump_possible(board, new_x, new_y) is True:
+                                    pass
+                                else:
+                                    # Swap sides
+                                    if current_player == 1:
+                                        current_player = 2
+                                        print("Black's Turn")
+                                    else:
+                                        current_player = 1
+                                        print("Red's Turn")
+
+                                    friendly, enemy = enemy, friendly
+                            else:
+                                # Swap sides
+                                if current_player == 1:
+                                    current_player = 2
+                                    print("Black's Turn")
+                                else:
+                                    current_player = 1
+                                    print("Red's Turn")
+
+                                friendly, enemy = enemy, friendly
 
                     if board[old_y][old_x] == (friendly['king']):
                         if is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y) is True:
+
                             if check_for_win(current_player, board) is True:
                                 game_over = True
 
-                            # Swap sides
-                            if current_player == 1:
-                                current_player = 2
-                                print("Black's Turn")
-                            else:
-                                current_player = 1
-                                print("Red's Turn")
+                            # If the total amount of chips has changed and a double
+                            # jump opportunity is available do not switch sides.
+                            current_piece_total = sum([sum(row) for row in board])
 
-                            friendly, enemy = enemy, friendly
+                            if previous_piece_total > current_piece_total:
+                                if check_if_double_jump_possible(board, new_x, new_y) is True:
+                                    pass
+                                # else:
+                                #     # Swap sides
+                                #     if current_player == 1:
+                                #         current_player = 2
+                                #         print("Black's Turn")
+                                #     else:
+                                #         current_player = 1
+                                #         print("Red's Turn")
+
+                                #     friendly, enemy = enemy, friendly
+                            else:
+                                # Swap sides
+                                if current_player == 1:
+                                    current_player = 2
+                                    print("Black's Turn")
+                                else:
+                                    current_player = 1
+                                    print("Red's Turn")
+
+                                friendly, enemy = enemy, friendly
 
 
                     # Turn player into king if they make it to the opposite side of the board
