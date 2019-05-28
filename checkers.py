@@ -254,19 +254,19 @@ def check_if_double_jump_possible(board, new_x, new_y):
         try:
             for i in range(8):
                 # North East
-                if board[new_y - i][new_x + i] == enemy['pawn'] or enemy['king']:
+                if board[new_y - i][new_x + i] == enemy['king']:
                     if board[new_y - (i+1)][new_x + (i+1)] == empty:
                         return True
                 # North West
-                elif board[new_y - i][new_x - i] == enemy['pawn'] or enemy['king']:
+                elif board[new_y - i][new_x - i] == enemy['king']:
                     if board[new_y - (i+1)][new_x - (i+1)] == empty:
                         return True
                 # South East
-                elif board[new_y + i][new_x + i] == enemy['pawn'] or enemy['king']:
+                elif board[new_y + i][new_x + i] ==  enemy['king']:
                     if board[new_y + (i+1)][new_x + (i+1)] == empty:
                         return True
                 # South West
-                elif board[new_y + i][new_x - i] == enemy['pawn'] or enemy['king']:
+                elif board[new_y + i][new_x - i] == enemy['king']:
                     if board[new_y + (i+1)][new_x - (i+1)] == empty:
                         return True
         except IndexError:
@@ -347,6 +347,7 @@ while not game_over:
             old_y = (current_pos[1] // height)
             # print(f"Old coordinates: [{old_x}, {old_y}]")
 
+
             # I didn't know about classes at all when I first started working on this project so
             # I've taken an easy but pretty sloppy approach to decided if a jump has occured
             # or not.
@@ -417,18 +418,16 @@ while not game_over:
                             if previous_piece_total > current_piece_total:
                                 if check_if_double_jump_possible(board, new_x, new_y) is True:
                                     pass
-                                # else:
-                                #     # Swap sides
-                                #     if current_player == 1:
-                                #         current_player = 2
-                                #         print("Black's Turn")
-                                #     else:
-                                #         current_player = 1
-                                #         print("Red's Turn")
+                                else:
+                                    if current_player == 1:
+                                        current_player = 2
+                                        print("Black's Turn")
+                                    else:
+                                        current_player = 1
+                                        print("Red's Turn")
 
-                                #     friendly, enemy = enemy, friendly
+                                    friendly, enemy = enemy, friendly
                             else:
-                                # Swap sides
                                 if current_player == 1:
                                     current_player = 2
                                     print("Black's Turn")
@@ -473,6 +472,22 @@ while not game_over:
                 pygame.draw.circle(screen, gold, rect_center, radius, border)
             if board[row][column] == 4:
                 pygame.draw.circle(screen, gold, rect_center, radius, border)
+
+    # GUI to help users tell which player's turn it is
+    if current_player == 1:
+        rect = pygame.draw.rect(screen, red, [535, 550, 65, 50])
+        font = pygame.font.Font('freesansbold.ttf', 18) 
+        text1 = font.render("Red's", True, white, red)
+        text2 = font.render("Turn", True, white, red)
+        screen.blit(text1, rect.topleft)
+        screen.blit(text2, rect.midleft)
+    else:
+        rect = pygame.draw.rect(screen, black, [0, 0, 65, 50])
+        font = pygame.font.Font('freesansbold.ttf', 18) 
+        text1 = font.render("Black's", True, white, black)
+        text2 = font.render("Turn   ", True, white, black)
+        screen.blit(text1, rect.topleft)
+        screen.blit(text2, rect.midleft)
 
     # Limit to 60 frames per second
     clock.tick(60)

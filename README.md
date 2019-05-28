@@ -16,7 +16,7 @@ This the first programming project I have ever completed entirely on my own and 
 ### How to play 
 Simply download the project and run the "checkers.py" file.
 
-### Things to be added/fixed
-- Add GUI to display which player's turn it is
-- Add double jumping
-- Fix normal pieces being allowed to jump over friendly king pieces.
+### Miscellaneous
+- I did not implement forced jumping because I found it less enjoyable to play with than without.
+- This project taught me a lot. I defintely would of done things a lot different if I we're start all over again. Sadly, I didn't know about classes before starting this project, which let to too a pretty base case of spaghetti code. The first thing I would done if I were to redo this project would be to implement classes so that my code would be a lot more organized and understandable not only for myself but also for others. I also would of split the project  into three seperate modules board, pieces and game.
+- Idea for possible YouTube series. I noticed that there aren't many pygame projects or python projects out there on YouTube currently that I find personally intersting (no offense to current YouTubers) so I'm thinking about making these projects somewhat of a series of YouTube where I will either post a short edited video where I walkthrough creating the project with the viewer or uploading a completing unedited stream of me creating the project from scratch or both.
