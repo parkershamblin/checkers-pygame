@@ -48,6 +48,7 @@ def is_valid_selection(board, current_player, old_x, old_y):
         print("You didn't select a piece. Please try selecting one of your pieces.")
         return False
 
+
 def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
     """All logic for pawn pieces."""
 
@@ -98,6 +99,7 @@ def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
         else:
             print("You can't move that far. Please select another positition to move too.")
             return False
+
 
 def no_chips_between(board, old_x, old_y, new_x, new_y):
     """Restricts king pieces from jumping over several players at once"""
@@ -275,16 +277,40 @@ def check_if_double_jump_possible(board, new_x, new_y):
         return False
 
 
-
 def check_for_win(current_player, board):
     remaining_enemy_pieces = []
     for row in board:
         remaining_enemy_pieces.append(row.count(enemy['pawn']))
         remaining_enemy_pieces.append(row.count(enemy['king']))
-    print(sum(remaining_enemy_pieces))
     if sum(remaining_enemy_pieces) == 0:
         print(f"Player {current_player} has won!")
         return True
+
+
+def draw_board(board):
+    for row in range(8):
+        for column in range(8):
+            #  Variables for pygame.draw pos paramater
+            # Draw all grid locations as either white or black rectangle
+            if (row + column) % 2 == 0:
+                color = white
+            else:
+                color = black
+            rect = pygame.draw.rect(screen, color, [width * column, height * row, width, height])
+            rect_center = rect.center
+            if board[row][column] == 1:
+                pygame.draw.circle(screen, red, rect_center, radius)
+            if board[row][column] == 2:
+                pygame.draw.circle(screen, black, rect_center, radius)
+                # Draw border around black pieces so that they're visible
+                pygame.draw.circle(screen, grey, rect_center, radius, border)
+            # Drawing king pieces borders
+            if board[row][column] == 3:
+                pygame.draw.circle(screen, red, rect_center, radius)
+                pygame.draw.circle(screen, gold, rect_center, radius, border)
+            if board[row][column] == 4:
+                pygame.draw.circle(screen, gold, rect_center, radius, border)
+
 
 # Initalize vairables
 game_over = False
@@ -328,6 +354,7 @@ border = (window_width // 200)
 # Current player turn
 current_player = 1
 print("Red's Turn") # Printing at start of the game before main loop
+
 
 # Main active game loop
 while not game_over:
@@ -449,48 +476,11 @@ while not game_over:
                                 board[7][column] = 4
                     break
 
-    # Draw onto screen
-    for row in range(8):
-        for column in range(8):
-            #  Variables for pygame.draw pos paramater
-            # Draw all grid locations as either white or black rectangle
-            if (row + column) % 2 == 0:
-                color = white
-            else:
-                color = black
-            rect = pygame.draw.rect(screen, color, [width * column, height * row, width, height])
-            rect_center = rect.center
-            if board[row][column] == 1:
-                pygame.draw.circle(screen, red, rect_center, radius)
-            if board[row][column] == 2:
-                pygame.draw.circle(screen, black, rect_center, radius)
-                # Draw border around black pieces so that they're visible
-                pygame.draw.circle(screen, grey, rect_center, radius, border)
-            # Drawing king pieces borders
-            if board[row][column] == 3:
-                pygame.draw.circle(screen, red, rect_center, radius)
-                pygame.draw.circle(screen, gold, rect_center, radius, border)
-            if board[row][column] == 4:
-                pygame.draw.circle(screen, gold, rect_center, radius, border)
-
-    # GUI to help users tell which player's turn it is
-    if current_player == 1:
-        rect = pygame.draw.rect(screen, red, [535, 550, 65, 50])
-        font = pygame.font.Font('freesansbold.ttf', 18) 
-        text1 = font.render("Red's", True, white, red)
-        text2 = font.render("Turn", True, white, red)
-        screen.blit(text1, rect.topleft)
-        screen.blit(text2, rect.midleft)
-    else:
-        rect = pygame.draw.rect(screen, black, [0, 0, 65, 50])
-        font = pygame.font.Font('freesansbold.ttf', 18) 
-        text1 = font.render("Black's", True, white, black)
-        text2 = font.render("Turn   ", True, white, black)
-        screen.blit(text1, rect.topleft)
-        screen.blit(text2, rect.midleft)
-
     # Limit to 60 frames per second
     clock.tick(60)
+
+    # Draw onto screen
+    draw_board(board)
 
     # Update screen with what we drew
     pygame.display.flip()
