@@ -1,6 +1,9 @@
 # checkers-pygame
 ![checkers_pygame_gameplay](https://user-images.githubusercontent.com/48718776/58029295-44fedc80-7aea-11e9-958f-cb9cc04e8656.gif)
 
+# WARNING: Project currently not in working condition.
+I'm new to using Git and I ended up accidently deleting the commit with the working version and reverted to a commit with a few bugs.
+
 ## Motivation
 I decided to create checkers in Python using Pygame to help increase my knowledge of Python and object-oriented programming. I've uploaded a YouTube video of my project conclusion [here](https://www.youtube.com/watch?v=PWl2LBISMug), where I talk about what I learned from the project and how I felt about the project after completing it.
 
