@@ -39,9 +39,9 @@ def place_starting_pieces():
 def is_valid_selection(board, current_player, old_x, old_y):
     """Restricts player from slecting posisitions containing no checker pieces or """
     board_selection = board[old_y][old_x]
-    if board_selection == friendly['pawn'] or friendly['king']:
+    if board_selection in (friendly['pawn'], friendly['king']):
         return True
-    elif board_selection == enemy['pawn'] or enemy['king']:
+    elif board_selection in (enemy['pawn'], enemy['king']):
         print("You've selected an enemy player's piece. Please select your own piece.")
         return False
     else:
@@ -65,13 +65,13 @@ def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
             return True
         # Checking for valid jump
         elif (new_y - old_y) == -2 and (new_x - old_x) == 2:
-            if board[new_y + 1][new_x - 1] == enemy['pawn'] or enemy['king']:
+            if board[new_y + 1][new_x - 1] in (enemy['pawn'], enemy['king']):
                 board[new_y + 1][new_x - 1] = empty
                 return True
             else:
                 return False
         elif (new_y - old_y) == -2 and (new_x - old_x) == -2:
-            if board[new_y + 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+            if board[new_y + 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                 board[new_y + 1][new_x + 1] = empty
                 return True
             else:
@@ -85,13 +85,13 @@ def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
             return True
         # Checking for valid jumps for Player 2
         elif (new_y - old_y) == 2 and (new_x - old_x) == 2:
-            if board[new_y - 1][new_x - 1] == enemy['pawn'] or enemy['king']:
+            if board[new_y - 1][new_x - 1] in (enemy['pawn'], enemy['king']):
                 board[new_y - 1][new_x - 1] = empty
                 return True
             else:
                 return False
         elif (new_y - old_y) == 2 and (new_x - old_x) == -2:
-            if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+            if board[new_y - 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                 board[new_y - 1][new_x + 1] = empty
                 return True
             else:
@@ -184,7 +184,7 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
     # King Jump Logic
     if board[old_y][old_x] == friendly['king']:
         try: # North East Jump
-            if board[new_y + 1][new_x - 1] == enemy['pawn'] or enemy['king']:
+            if board[new_y + 1][new_x - 1] in (enemy['pawn'], enemy['king']):
                 if old_x < new_x and old_y > new_y:
                     if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                         board[new_y][new_x] = friendly['king']
@@ -194,7 +194,7 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
         except IndexError:
             pass
         try: # North West Jump 
-            if board[new_y + 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+            if board[new_y + 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                 if old_x > new_x and old_y > new_y:
                     if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                         board[new_y][new_x] = friendly['king']
@@ -204,7 +204,7 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
         except IndexError:
             pass
         try: # South East Jump
-            if board[new_y - 1][new_x - 1] == enemy['pawn'] or enemy['king']:
+            if board[new_y - 1][new_x - 1] in (enemy['pawn'], enemy['king']):
                 if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                     if old_x < new_x and old_y < new_y:
                         board[new_y][new_x] = friendly['king']
@@ -214,7 +214,7 @@ def is_valid_king_move(current_player, board, old_x, old_y, new_x, new_y):
         except IndexError:
             pass
         try: # South West Jump
-            if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['pawn']:
+            if board[new_y - 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                 if no_chips_between(board, old_x, old_y, new_x, new_y) is True:
                     if old_x > new_x and old_y < new_y:
                         board[new_y][new_x] = friendly['king']
@@ -231,11 +231,11 @@ def check_if_double_jump_possible(board, new_x, new_y):
         try:
             # North East
             if board[new_y - 2][new_x + 2] == empty:
-                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                if board[new_y - 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                     return True
             # North West
             elif board[new_y - 2][new_x - 2] == empty:
-                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                if board[new_y - 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                     return True
         except IndexError:
             pass
@@ -243,11 +243,11 @@ def check_if_double_jump_possible(board, new_x, new_y):
         try:
             # North East
             if board[new_y + 2][new_x + 2] == empty:
-                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                if board[new_y - 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                     return True
             # North West
             elif board[new_y + 2][new_x - 2] == empty:
-                if board[new_y - 1][new_x + 1] == enemy['pawn'] or enemy['king']:
+                if board[new_y - 1][new_x + 1] in (enemy['pawn'], enemy['king']):
                     return True
         except IndexError:
             pass
