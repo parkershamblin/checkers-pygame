@@ -7,6 +7,3 @@ Play checkers with your friend on a local computer. Simply download the project 
 ### Requirements
 - python 3+
 - pygame 1.9.5
-
-### How to play 
-Simply download the project and run the "checkers.py" file.
