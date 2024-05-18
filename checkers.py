@@ -37,7 +37,7 @@ def place_starting_pieces():
 
 
 def is_valid_selection(board, current_player, old_x, old_y):
-    """Restricts player from slecting posisitions containing no checker pieces or"""
+    """Restricts player from slecting posisitions containing no checker pieces"""
     board_selection = board[old_y][old_x]
     if board_selection in (friendly["pawn"], friendly["king"]):
         return True
@@ -97,7 +97,7 @@ def is_valid_move(current_player, board, old_x, old_y, new_x, new_y):
             else:
                 return False
         else:
-            print("You can't move that far. Please select another positition to move too.")
+            print("You can't move that far. Please select another positition to move to.")
             return False
 
 
