@@ -1,6 +1,8 @@
 # Checkers with Pygame
 This repository contains a simple implementation of the classic board game Checkers using Pygame. The game allows two players to play checkers on an 8x8 board, with pieces that can be moved according to the standard rules of checkers.
 
+https://user-images.githubusercontent.com/48718776/58029295-44fedc80-7aea-11e9-958f-cb9cc04e8656.gif
+
 ## Features
 * Two-player gameplay on an 8x8 board
 * Standard and king pieces with appropriate movement and jumping rules
