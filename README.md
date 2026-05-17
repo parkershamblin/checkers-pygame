@@ -7,8 +7,10 @@ This repository contains a simple implementation of the classic board game Check
 * Basic win condition detection
 * Graphical representation of the board and pieces using Pygame
 ## Requirements
-* Python 3.x
-* Pygame
+* Python 3.10-3.12 recommended
+* Pygame 2.6.1
+
+Python 3.14 may try to build Pygame from source on Windows instead of installing a wheel.
 ## Installation
 1. Clone this repository:
    ```
@@ -20,13 +22,13 @@ This repository contains a simple implementation of the classic board game Check
     ```
 3. Install the required packages:
     ```
-    pip install pygame
+    py -3.10 -m pip install -r requirements.txt
     ```
 
 ## Usage
 Run the main script to start the game:
 ```
-python checkers.py
+py -3.10 checkers.py
 ```
 
 ## How to Play

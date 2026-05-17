@@ -1,0 +1,7 @@
+name: checkers-pygame-py312
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pygame=2.6.1
