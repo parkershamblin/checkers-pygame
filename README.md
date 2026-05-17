@@ -30,7 +30,7 @@ Python 3.14 may try to build Pygame from source on Windows instead of installing
 ## Usage
 Run the main script to start the game:
 ```
-py -3.10 checkers.py
+py -3.10 main.py
 ```
 
 ## How to Play

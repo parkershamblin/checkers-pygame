@@ -1,0 +1,51 @@
+# Piece values
+EMPTY = 0
+RED_PAWN = 1
+BLACK_PAWN = 2
+RED_KING = 3
+BLACK_KING = 4
+
+# Player values
+RED = 1
+BLACK = 2
+
+# Board size
+ROWS = 8
+COLUMNS = 8
+
+# Display settings
+WINDOW_SIZE = (600, 600)
+CELL_WIDTH = WINDOW_SIZE[0] // COLUMNS
+CELL_HEIGHT = WINDOW_SIZE[1] // ROWS
+PIECE_RADIUS = WINDOW_SIZE[0] // 20
+PIECE_BORDER = max(1, WINDOW_SIZE[0] // 200)
+
+# Colors
+BOARD_BLACK = (0, 0, 0)
+BOARD_WHITE = (255, 255, 255)
+RED_COLOR = (255, 0, 0)
+BLACK_COLOR = (0, 0, 0)
+GREY = (128, 128, 128)
+GOLD = (255, 215, 0)
+SELECTED_GREEN = (0, 180, 0)
+
+PLAYER_NAMES = {
+    RED: "Red",
+    BLACK: "Black",
+}
+
+PLAYER_PAWNS = {
+    RED: RED_PAWN,
+    BLACK: BLACK_PAWN,
+}
+
+PLAYER_KINGS = {
+    RED: RED_KING,
+    BLACK: BLACK_KING,
+}
+
+PLAYER_PIECES = {
+    RED: (RED_PAWN, RED_KING),
+    BLACK: (BLACK_PAWN, BLACK_KING),
+}
+
