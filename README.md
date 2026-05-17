@@ -1,40 +1,50 @@
 # Checkers with Pygame
-This repository contains a simple implementation of the classic board game Checkers using Pygame. The game allows two players to play checkers on an 8x8 board, with pieces that can be moved according to the standard rules of checkers.
+
+A classic two-player Checkers implementation built with Python and Pygame. The game runs on an 8x8 board with standard rules for pawns, kings, jumping, and piece promotion.
 
 ![checkers_pygame_gameplay](https://user-images.githubusercontent.com/48718776/58029295-44fedc80-7aea-11e9-958f-cb9cc04e8656.gif)
 
 ## Features
-* Two-player gameplay on an 8x8 board
-* Standard and king pieces with appropriate movement and jumping rules
-* Basic win condition detection
-* Graphical representation of the board and pieces using Pygame
-## Requirements
-* Python 3.10-3.12 recommended
-* Pygame 2.6.1
 
-Python 3.14 may try to build Pygame from source on Windows instead of installing a wheel.
+- Two-player gameplay on an 8x8 board
+- Standard and king pieces with appropriate movement and jumping rules
+- Basic win condition detection
+- Graphical representation of the board and pieces using Pygame
+
+## Requirements
+
+- Python 3.10-3.12 recommended
+- Pygame 2.6.1
+- Anaconda (optional, for environment management)
+
 ## Installation
+
 1. Clone this repository:
-   ```
+   ```powershell
    git clone https://github.com/yourusername/checkers-pygame.git
+   cd checkers-pygame
    ```
-2. Navigate to the project directory:
-    ```
-    cd checkers-pygame
-    ```
-3. Install the required packages:
-    ```
-    py -3.10 -m pip install -r requirements.txt
-    ```
+
+2. Set up the environment using Anaconda:
+   ```powershell
+   conda env create --file environment.yml
+   conda activate checkers-pygame-py312
+   ```
 
 ## Usage
-Run the main script to start the game:
-```
-py -3.10 main.py
+
+Run the game:
+
+```powershell
+python main.py
 ```
 
+Press **Q** to quit the game at any time.
+
 ## How to Play
-1. The game starts with Player 1 (Red) and Player 2 (Black) pieces placed on the board.
-2. Players take turns to move their pieces. A valid move for a pawn is one step diagonally forward to an empty square. A valid move for a king is one step diagonally in any direction to an empty square.
-3. Players can jump over an opponent's piece to capture it. Multiple jumps are allowed if the player can continue to jump over opponent's pieces.
-4. The game ends when one player captures all the opponent's pieces or when a player has no valid moves left.
+
+1. **Starting Position**: Red pieces are at the bottom, Black pieces at the top.
+2. **Basic Movement**: Move a pawn one square diagonally forward to an empty square. Kings can move diagonally in any direction.
+3. **Capturing**: Jump over an opponent's piece to capture it. Chain multiple jumps in a single turn if possible.
+4. **Promotion**: Reach the opposite end of the board with a pawn to promote it to a king.
+5. **Winning**: Capture all opponent pieces or leave them with no legal moves to win.
